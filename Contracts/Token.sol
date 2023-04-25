@@ -15,7 +15,7 @@ contract Ticket is ERC1155, Ownable, ERC1155Supply,ERC1155Burnable {
 
     function mint(address to, uint256 id, uint256 amount)
         public
-        onlyOwner
+       
     {
         // _mint(msg.sender, id, amount, "");
         _mint(to, id, amount, "");
@@ -28,6 +28,7 @@ contract Ticket is ERC1155, Ownable, ERC1155Supply,ERC1155Burnable {
         _mintBatch(to, ids, amounts, "");
     }
    
+
 
     // The following functions are overrides required by Solidity.
 
