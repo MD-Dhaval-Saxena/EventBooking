@@ -12,8 +12,9 @@ contract EventBooking is ERC1155Holder {
         tokenAdd = Ticket(_token);
     }
     uint nonce=0;
-    uint eventIdTracker=0;
+    uint public eventIdTracker=0;
     uint256 []  CurrEvents ;
+    string []  TOtal ;
 
     struct Event {
         // ERC1155 _token;
@@ -47,6 +48,7 @@ contract EventBooking is ERC1155Holder {
         uint256 _endTime,
         uint256 _tickets
     ) public {
+        eventIdTracker++;
 
     //    uint256 _eventID = uint256(abi.encodePacked(_startTime,_Date));
         Event storage events = eventInfo[_eventID];
@@ -61,7 +63,6 @@ contract EventBooking is ERC1155Holder {
             _tickets,
             new uint256[](0)
         );
-        eventIdTracker++;
 
         remainCategory[_eventID] = _tickets;
         CancelEvent[_eventID] = false;
@@ -78,9 +79,9 @@ contract EventBooking is ERC1155Holder {
         // Silver =0,Gold=1,Diamond=2
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
-        TicketCategory storage ticCategory = eventTicketCategories[_eventID][
-            category
-        ];
+        // TicketCategory storage ticCategory = eventTicketCategories[_eventID][
+        //     category
+        // ];
         // if yOU DON'T WANT THE ORGINIZER TO UPDATE CATEGORY+
         // require(ticCategory.totalTickets < 1 ,"Event Category Exist");
         require(events.Owner != address(0), "Event Not Found");
@@ -144,7 +145,7 @@ contract EventBooking is ERC1155Holder {
         uint256 quantity
     ) public payable {
         // 10% tax on cancelTicket
-        Event storage events = eventInfo[eventID];
+        // Event storage events = eventInfo[eventID];
         TicketCategory storage ticCategory = eventTicketCategories[eventID][
             category
         ];
@@ -181,16 +182,12 @@ contract EventBooking is ERC1155Holder {
     // function ViewEvents() public view returns(uint256[] memory){
     //     return CurrEvents;
     // }
-    // function ViewEvents() public view returns(){
-    //     return ;
-    // }
     function viewAllEvents() public view returns (Event[] memory) {
-    Event[] memory events = new Event[](eventIdTracker);
-
-    for (uint256 i = 1; i < eventIdTracker; i++) {
-        events[i] = eventInfo[i];
+        Event[] memory id = new Event[](CurrEvents.length); //2
+        for(uint256 i = 0; i < CurrEvents.length; i++) { 
+            Event storage eve=eventInfo[i];
+            id[i]=eve;
+        }
+        return id;
     }
-
-    return events;
-}
 }
