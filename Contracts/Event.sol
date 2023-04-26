@@ -11,13 +11,19 @@ contract EventBooking is ERC1155Holder {
     constructor(address _token) {
         tokenAdd = Ticket(_token);
     }
-    uint nonce=0;
     uint public eventIdTracker=0;
     uint256 []  CurrEvents ;
-    string []  TOtal ;
+    event EventCreate(
+        uint256 eventId,
+        string EventName,
+        address Owner,
+        uint256 Date,
+        uint256 starTime,
+        uint256 endTime,
+        uint256 tickets
+    );
 
     struct Event {
-        // ERC1155 _token;
         uint256 eventId;
         string EventName;
         address Owner;
@@ -27,13 +33,15 @@ contract EventBooking is ERC1155Holder {
         uint256 tickets;
         uint256[] ticketCategories;
     }
+    
     mapping(uint256 => Event) public eventInfo;
     mapping(uint256 => mapping(uint256 => TicketCategory))
         public eventTicketCategories;
-    mapping(uint256 => uint256) public remainCategory; //Testing
+    mapping(uint256 => uint256)  remainCategory; //Testing
     mapping(uint256 => bool) public CancelEvent;
 
-    mapping(uint256 => mapping(address => uint256)) public userFunds;
+    // userFunds public until testing phase
+    mapping(uint256 => mapping(address => uint256)) public userFunds; 
     struct TicketCategory {
         uint256 price;
         uint256 totalTickets;
@@ -50,7 +58,7 @@ contract EventBooking is ERC1155Holder {
     ) public {
         eventIdTracker++;
 
-    //    uint256 _eventID = uint256(abi.encodePacked(_startTime,_Date));
+    //    uint256 _eventID = uint256(keccak256(abi.encodePacked(_startTime,_Date)));
         Event storage events = eventInfo[_eventID];
         require(_eventID != events.eventId, "EventId Aleready Exist");
         eventInfo[_eventID] = Event(
@@ -63,7 +71,14 @@ contract EventBooking is ERC1155Holder {
             _tickets,
             new uint256[](0)
         );
-
+        emit EventCreate( _eventID,
+            _EventName,
+            msg.sender,
+            _Date,
+            _startTime,
+            _endTime,
+            _tickets
+            );
         remainCategory[_eventID] = _tickets;
         CancelEvent[_eventID] = false;
         CurrEvents.push(_eventID);
@@ -76,7 +91,7 @@ contract EventBooking is ERC1155Holder {
         uint256 price,
         uint256 totalTickets
     ) public {
-        // Silver =0,Gold=1,Diamond=2
+        // Silver =1,Gold=2,Diamond=3
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
         // TicketCategory storage ticCategory = eventTicketCategories[_eventID][
@@ -127,11 +142,7 @@ contract EventBooking is ERC1155Holder {
         ticCategory.totalTickets -= _quantity;
         // Mint by user
         tokenAdd.mint(msg.sender, _category, _quantity); //owner mint
-        // userFunds[msg.sender]+=msg.value;
-        // mapping(uint => mapping(address=>uint256)) public userFunds;
-
         userFunds[_eventID][msg.sender] += msg.value;
-        // tokenAdd.setApprovalForAll(msg.sender,true);
         // transfer from owner to buyer
         // tokenAdd.safeTransferFrom(events.Owner,msg.sender,category,quantity,"");
     }
@@ -155,12 +166,15 @@ contract EventBooking is ERC1155Holder {
         payable(msg.sender).transfer(totalRefund);
         tokenAdd.burn(msg.sender, category, quantity);
     }
-    function Cancel_event(uint256 _eventID) public {
+
+    function Cancel_event(uint256 _eventID,uint _category) public {
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
         CancelEvent[_eventID] = true;
         delete eventInfo[_eventID];
-        // TODO: Refund All payments & Burn Tickets
+        uint balance= tokenAdd.balanceOf(msg.sender, _category);
+        tokenAdd.burn(msg.sender, _category, balance);
+
         // delete eventTicketCategories[]
     }
 
