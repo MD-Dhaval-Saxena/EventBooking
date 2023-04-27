@@ -2,6 +2,171 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_token",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "eventId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "EventName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "Owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Date",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "startBooking",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "endBooking",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tickets",
+				"type": "uint256"
+			}
+		],
+		"name": "EventCreate",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "CancelEvent",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_eventID",
+				"type": "uint256"
+			}
+		],
+		"name": "Cancel_event",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_eventID",
+				"type": "uint256"
+			}
+		],
+		"name": "PaymentToOWner",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "acc",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_eventID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_category",
+				"type": "uint256"
+			}
+		],
+		"name": "VerifyTicket",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "acc",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "ViewTicket",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "WithdrawETH",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "_eventID",
 				"type": "uint256"
@@ -54,19 +219,6 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_eventID",
-				"type": "uint256"
-			}
-		],
-		"name": "Cancel_event",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
 				"name": "eventID",
 				"type": "uint256"
 			},
@@ -91,6 +243,11 @@
 			{
 				"internalType": "uint256",
 				"name": "_eventID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_category",
 				"type": "uint256"
 			}
 		],
@@ -118,12 +275,12 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "_startTime",
+				"name": "_startBooking",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "_endTime",
+				"name": "_endBooking",
 				"type": "uint256"
 			},
 			{
@@ -138,64 +295,100 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "eventIdTracker",
+		"outputs": [
 			{
-				"internalType": "address",
-				"name": "_token",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "eventInfo",
+		"outputs": [
+			{
 				"internalType": "uint256",
 				"name": "eventId",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
 				"internalType": "string",
 				"name": "EventName",
 				"type": "string"
 			},
 			{
-				"indexed": false,
 				"internalType": "address",
 				"name": "Owner",
 				"type": "address"
 			},
 			{
-				"indexed": false,
 				"internalType": "uint256",
 				"name": "Date",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "starTime",
+				"name": "startBooking",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "endTime",
+				"name": "endBooking",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
 				"internalType": "uint256",
 				"name": "tickets",
 				"type": "uint256"
 			}
 		],
-		"name": "EventCreate",
-		"type": "event"
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "eventTicketCategories",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalTickets",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "remainingTickets",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -276,128 +469,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "WithdrawETH",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "CancelEvent",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "eventIdTracker",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "eventInfo",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "eventId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "EventName",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "Owner",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "Date",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "startTime",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "endTime",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tickets",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "eventTicketCategories",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalTickets",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "remainingTickets",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "bytes4",
@@ -468,12 +539,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "startTime",
+						"name": "startBooking",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "endTime",
+						"name": "endBooking",
 						"type": "uint256"
 					},
 					{
@@ -490,30 +561,6 @@
 				"internalType": "struct EventBooking.Event[]",
 				"name": "",
 				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "acc",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "ViewTicket",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",

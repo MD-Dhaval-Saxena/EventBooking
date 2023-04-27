@@ -36,16 +36,20 @@ const connect = async () => {
     // const tx=await contracWithWallet.cancelTicket(1,1,1);
     // const tx=await contracWithWallet.Cancel_event(1);
     // const tx=await contracWithWallet.claimRefund(1);
+    const tx=await contracWithWallet.eventInfo(1);
+    console.log("🚀 ---------------------🚀")
+    console.log("🚀 ~ connect ~ tx:", tx)
+    console.log("🚀 ---------------------🚀")
 
 
     
 
     // const rc = await tx.wait();
-    // // console.log("🚀 ---------------------🚀")
-    // // console.log("🚀 ~ connect ~ rc:", rc)
-    // // console.log("🚀 ---------------------🚀")
-    // const events = rc.events;
-    // console.log("🚀 -----------------------------🚀")
+    // console.log("🚀 ---------------------🚀")
+    // console.log("🚀 ~ connect ~ rc:", rc)
+    // console.log("🚀 ---------------------🚀")
+    //     const events = rc.events;
+    //     console.log("🚀 -----------------------------🚀")
     // console.log("🚀 ~ connect ~ events:", events)
     // console.log("🚀 -----------------------------🚀")
 
