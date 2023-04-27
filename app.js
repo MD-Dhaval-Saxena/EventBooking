@@ -63,7 +63,7 @@ app.post('/ViewEvent',async(req,res)=>{
 app.post('/CreateEvent',async(req,res)=>{
 
         let data=req.body;
-        
+
         let eventId= data.eventId;
         let EventName= data.EventName;
         // let Owner= data.Owner;
@@ -75,11 +75,14 @@ app.post('/CreateEvent',async(req,res)=>{
         const tx =await contracWithWallet.createEvent(
             eventId,EventName,Date,startTime,endTime,tickets
         );
+        // const tx =await contracWithWallet.createEvent(
+        //     1,"EventName",1,1,1,40
+        // );
         console.log("🚀 ----------------------🚀")
         console.log("🚀 ~ app.post ~ tx:", tx)
         console.log("🚀 ----------------------🚀")
         console.log(req.body);
-    res.send(data);
+    res.send(tx);
     // res.send(name)
 
 })
@@ -87,3 +90,6 @@ app.post('/CreateEvent',async(req,res)=>{
 app.listen(8000,()=>{
     console.log(`Serving on http://127.0.0.1:8000`);
 })
+
+// con="0x77677De940e9E59941F4ae18E9EFDfa54a07A42C"
+// TOk="0xC9DbD4EC58D9A235dd9495B0cff45Bb22e534997"
