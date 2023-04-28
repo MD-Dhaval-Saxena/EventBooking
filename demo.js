@@ -1,0 +1,1 @@
+'cannot override _hex,_isBigNumber,fromTwos,toTwos,abs,add,sub,div,mul,mod,pow,and,or,xor,mask,shl,shr,eq,lt,lte,gt,gte,isNegative,isZero,toNumber,toBigInt,toString,toHexString,toJSON
