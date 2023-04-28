@@ -1,0 +1,76 @@
+[
+    {
+      "eventId": 1,
+      "EventName": "EventName",
+      "Owner": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
+      "Date": "January 1, 1970 at 5:30\u202fAM",
+      "startBooking": "January 1, 1970 at 5:30\u202fAM",
+      "endBooking": "January 1, 1970 at 5:30\u202fAM",
+      "tickets": 36
+    },
+    {
+      "categoryID": 1,
+      "price": 100000000000000000,
+      "totalTickets": 0
+    },
+    {
+      "categoryID": 2,
+      "price": 500000000000000000,
+      "totalTickets": 0
+    },
+    {
+      "categoryID": 3,
+      "price": 100000000000000000,
+      "totalTickets": 0
+    },
+    {
+      "eventId": 2,
+      "EventName": "divine",
+      "Owner": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
+      "Date": "January 1, 1970 at 5:30\u202fAM",
+      "startBooking": "January 1, 1970 at 5:30\u202fAM",
+      "endBooking": "January 1, 1970 at 5:30\u202fAM",
+      "tickets": 40
+    },
+    {
+      "categoryID": 2,
+      "price": 500000000000000000,
+      "totalTickets": 1
+    },
+    {
+      "eventId": 3,
+      "EventName": "divine",
+      "Owner": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
+      "Date": "January 1, 1970 at 5:30\u202fAM",
+      "startBooking": "January 1, 1970 at 5:30\u202fAM",
+      "endBooking": "January 1, 1970 at 5:30\u202fAM",
+      "tickets": 40
+    },
+    {
+      "eventId": 4,
+      "EventName": "divine",
+      "Owner": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
+      "Date": "January 1, 1970 at 5:30\u202fAM",
+      "startBooking": "January 1, 1970 at 5:30\u202fAM",
+      "endBooking": "January 1, 1970 at 5:30\u202fAM",
+      "tickets": 40
+    },
+    {
+      "eventId": 5,
+      "EventName": "divine",
+      "Owner": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
+      "Date": "January 1, 1970 at 5:30\u202fAM",
+      "startBooking": "January 1, 1970 at 5:30\u202fAM",
+      "endBooking": "January 1, 1970 at 5:30\u202fAM",
+      "tickets": 40
+    },
+    {
+      "eventId": 7,
+      "EventName": "emiway",
+      "Owner": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
+      "Date": "January 1, 1970 at 5:30\u202fAM",
+      "startBooking": "January 1, 1970 at 5:30\u202fAM",
+      "endBooking": "January 1, 1970 at 5:30\u202fAM",
+      "tickets": 40
+    }
+  ]

@@ -16,6 +16,7 @@ contract EventBooking is ERC1155Holder {
 
     uint public eventIdTracker=0;
     uint256 []  CurrEvents ;
+    uint256 [] public CountCategories ;
     event EventCreate(
         uint256 eventId,
         string EventName,
@@ -113,6 +114,7 @@ contract EventBooking is ERC1155Holder {
             totalTickets
         );
         remainCategory[_eventID] -= totalTickets;
+        CountCategories.push(category);
     }
 
     function bookTicket(
@@ -121,8 +123,8 @@ contract EventBooking is ERC1155Holder {
         uint256 _quantity
     ) public payable {
         Event storage events = eventInfo[_eventID];
-        // require(block.timestamp >= events.startBooking, "Booking Will Open Soon,Not began yet");
-        // require(block.timestamp <= events.endBooking, "Sorry! Booking's For this Event ended");
+        require(block.timestamp >= events.startBooking, "Booking Will Open Soon,Not began yet");
+        require(block.timestamp <= events.endBooking, "Sorry! Booking's For this Event ended");
 
         require(events.Owner != address(0), "Event Not Found,Please Reconfirm");
         TicketCategory storage ticCategory = eventTicketCategories[_eventID][
@@ -224,7 +226,7 @@ contract EventBooking is ERC1155Holder {
     function PaymentToOWner(uint _eventID) public payable {
         Event storage events = eventInfo[_eventID];
         require(events.Owner != address(0), "Event Not Found");
-        // require(block.timestamp > events.endBooking,"Booking For Event is Still Open");
+        require(block.timestamp > events.endBooking,"Booking For Event is Still Open");
         require(contract_owner == msg.sender,"Only Contract Owner");
         payable(events.Owner).transfer(address(this).balance);
 
@@ -234,6 +236,9 @@ contract EventBooking is ERC1155Holder {
     //     return CurrEvents;
     // }
 
+    function getCat() public view returns(uint[] memory){
+        return CountCategories;
+    }
     function viewAllEvents() public view returns (Event[] memory) {
         Event[] memory id = new Event[](CurrEvents.length); //2
         for(uint256 i = 0; i < CurrEvents.length; i++) { 
