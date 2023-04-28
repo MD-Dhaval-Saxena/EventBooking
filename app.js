@@ -1,7 +1,7 @@
-require("dotenv").config();
+require("dotenv").config()
 const express=require('express');
-const ethers=require('ethers');
-const mongoose = require("mongoose");
+const ethers= require('ethers');
+// const mongoose = require("mongoose");
 
 const eventModel=require('./Models/Event');
 
@@ -10,11 +10,11 @@ const tokenAbi = require("./ABI/Token.json");
 const contract_address = process.env.contract_address;
 const Token_address = process.env.token_contract;
 const account = process.env.account;
-const account2 = process.env.account2;
+// const account2 = process.env.account2;
 const privateKey = process.env.account_private_key;
 const provider = new ethers.providers.JsonRpcProvider(process.env.sepolia_url);
 
-const toEth = (value) => etherss.utils.formatEther(value);
+const toEth = (value) => ethers.utils.formatEther(value);
 const toWei = (value) => ethers.utils.parseEther(value.toString());
 const cors=require('cors');
 const wallet = new ethers.Wallet(privateKey, provider);
@@ -24,11 +24,11 @@ contracWithWallet = contract.connect(wallet);
 
 
 const app=express();
-try {
-    mongoose.connect(process.env.mongo_url);
-} catch (error) {
-    console.log(error);  
-}   
+// try {
+//     mongoose.connect(process.env.mongo_url);
+// } catch (error) {
+//     console.log(error);  
+// }   
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,9 +44,10 @@ app.get('/',async(req,res)=>{
     res.send('hello');
 });
 
-app.post('/ViewEvent',async(req,res)=>{
-    const tx =await contracWithWallet.eventInfo(1);
-    console.log(tx);
+app.get('/ViewEvent/:id',async(req,res)=>{
+    let id=req.params.id;
+    const tx =await contracWithWallet.eventInfo(id);
+
 
     let event ={
     eventId: parseInt(tx.eventId),
@@ -61,7 +62,14 @@ app.post('/ViewEvent',async(req,res)=>{
 
 })
 app.post('/CreateEvent',async(req,res)=>{
-
+    // {
+    //     "eventId": 1,
+    //     "EventName": "EventName",
+    //     "Date": 1,
+    //     "startTime": 1,
+    //     "endTime": 1,
+    //     "tickets": 40
+    //   }
         let data=req.body;
 
         let eventId= data.eventId;
@@ -78,11 +86,70 @@ app.post('/CreateEvent',async(req,res)=>{
         // const tx =await contracWithWallet.createEvent(
         //     1,"EventName",1,1,1,40
         // );
-        console.log("🚀 ----------------------🚀")
-        console.log("🚀 ~ app.post ~ tx:", tx)
-        console.log("🚀 ----------------------🚀")
+        
         console.log(req.body);
-    res.send(tx);
+    res.send(data);
+    // res.send(name)
+
+})
+app.post('/add_Ticket_Category',async(req,res)=>{
+    // {
+    //     "eventId": 1,
+    //     "category": 1,
+    //     "price": 0.1,
+    //     "totalTickets": 1
+    //   }
+    // price bigInt Problem
+        let data=req.body;
+
+        let eventId= data.eventId;
+        let category=data.Date;
+        let price= data.startTime;
+        let totalTickets=data.tickets;
+        const tx =await contracWithWallet.add_Ticket_Category(
+            eventId,category,BigInt(price),totalTickets
+        );
+        console.log(req.body);
+     res.send(data);
+    // res.send(name)
+
+})
+app.post('/bookTicket',async(req,res)=>{
+    // {
+    //     "eventId": 1,
+    //     "category": 1,
+    //     "_quantity":1
+    //   }
+        let data=req.body;
+
+        let eventId= data.eventId;
+        let category=data.Date;
+        let _quantity=data._quantity;
+        let value=toWei(0.1);
+        const tx =await contracWithWallet.add_Ticket_Category(
+            eventId,category,_quantity,value
+        );
+        console.log(req.body);
+    res.send(data);
+    // res.send(name)
+
+})
+app.post('/cancelTicket',async(req,res)=>{
+    // {
+    //     "eventId": 1,
+    //     "category": 1,
+    //     "_quantity":1
+    //   }
+        let data=req.body;
+
+        let eventId= data.eventId;
+        let category=data.Date;
+        let _quantity=data._quantity;
+        const tx =await contracWithWallet.cancelTicket(
+            eventId,category,_quantity
+        );
+        console.log(req.body);
+     res.send(data);
     // res.send(name)
 
 })
@@ -90,6 +157,3 @@ app.post('/CreateEvent',async(req,res)=>{
 app.listen(8000,()=>{
     console.log(`Serving on http://127.0.0.1:8000`);
 })
-
-// con="0x77677De940e9E59941F4ae18E9EFDfa54a07A42C"
-// TOk="0xC9DbD4EC58D9A235dd9495B0cff45Bb22e534997"
