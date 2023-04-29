@@ -36,7 +36,8 @@ const connect = async () => {
     // const tx=await contracWithWallet.cancelTicket(1,1,1);
     // const tx=await contracWithWallet.Cancel_event(1);
     // const tx=await contracWithWallet.claimRefund(1);
-    const tx=await contracWithWallet.eventInfo(1);
+    // const tx=await contracWithWallet.eventInfo(1);
+    const tx=await contracWithWallet.cance(1);
     console.log("🚀 ---------------------🚀")
     console.log("🚀 ~ connect ~ tx:", tx)
     console.log("🚀 ---------------------🚀")
