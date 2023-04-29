@@ -52,9 +52,14 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/ViewEvent/:id", async (req, res) => {
+  let events = [];
+  let CatLen=[1,2,3]; //Fetch from contract
+  let event;
+  let category;
+  let tx1;
   let id = req.params.id;
   const tx = await contracWithWallet.eventInfo(id);
-  let event = {
+  event = {
     eventId: parseInt(tx.eventId),
     EventName: tx.EventName,
     Owner: tx.Owner,
@@ -63,10 +68,27 @@ app.get("/ViewEvent/:id", async (req, res) => {
     endBooking: toDate(tx.endBooking),
     tickets: parseInt(tx.tickets),
   };
-  if (event.eventId == 0) {
-    res.send({ Status: "Event Not Found" });
+  if (!event.eventId == 0) {
+    events.push(event);
   }
-  res.send(event);
+
+  for (let cID = 1; cID <= CatLen.length; cID++) {
+    tx1 = await contracWithWallet.eventTicketCategories(id, `${id}00${cID}`);
+    category = {
+      categoryID: cID,
+      price: parseInt(tx1.price),
+      totalTickets: parseInt(tx1.totalTickets),
+    };
+
+    if (!category.price == 0) {
+      events.push(category);
+    }
+  }
+  // if (event.eventId == 0) {
+  //   res.send({ Status: "Event Not Found" });
+  // }
+  console.log(events);
+  res.send(events);
 });
 app.get("/ViewAllEvent", async (req, res) => {
   let events = [];
@@ -99,7 +121,7 @@ app.get("/ViewAllEvent", async (req, res) => {
       events.push(event);
     }
     for (let cID = 1; cID <= CatLen.length; cID++) {
-      tx1 = await contracWithWallet.eventTicketCategories(i, cID);
+      tx1 = await contracWithWallet.eventTicketCategories(i,`${i}00${cID}`);
       category = {
         categoryID: cID,
         price: parseInt(tx1.price),
@@ -111,19 +133,18 @@ app.get("/ViewAllEvent", async (req, res) => {
       }
     }
   }
-
   // console.log(category);
   res.send(events);
 });
 app.post("/CreateEvent", async (req, res) => {
-  //   {
-  //       "eventId": 9,
-  //       "EventName": "krsna dollar sign",
-  //       "Date": 1682763026,
-  //       "startBooking": 1682660878,
-  //       "endBooking": 1682763026,
-  //       "tickets": 40
-  //     }
+    // {
+    //     "eventId": 9,
+    //     "EventName": "krsna dollar sign",
+    //     "Date": 1682763026,
+    //     "startBooking": 1682660878,
+    //     "endBooking": 1682763026,
+    //     "tickets": 40
+    //   }
   let data = req.body;
 
   let eventId = data.eventId;
@@ -152,25 +173,30 @@ app.post("/CreateEvent", async (req, res) => {
 });
 app.post("/add_Ticket_Category", async (req, res) => {
   // {
-  //     "eventId": 1,
-  //     "category": 1,
-  //     "price": 0.1,
-  //     "totalTickets": 1
-  //   }
+  //   "eventId": 1,
+  //   "category": 1001,
+  //   "price": 0.1,
+  //   "totalTickets": 30
+  // }
   let data = req.body;
 
   let eventId = data.eventId;
   let category = data.category;
   let price = data.price;
   let totalTickets = data.totalTickets;
-  const tx = await contracWithWallet.add_Ticket_Category(
-    eventId,
-    category,
-    toWei(price),
-    totalTickets
-  );
+  try {
+    const tx = await contracWithWallet.add_Ticket_Category(
+      eventId,
+      category,
+      toWei(price),
+      totalTickets
+    );
+    res.send({"Status":`Category Added For EventID:${eventId}`});
+    
+  } catch (error) {
+    res.send(error);
+  }
 
-  res.send(tx);
 });
 app.post("/bookTicket", async (req, res) => {
   //     {
@@ -192,7 +218,7 @@ app.post("/bookTicket", async (req, res) => {
     valueAmount
   );
   console.log(req.body);
-  res.send(data);
+  res.send({"Status":`Ticket Booked Succefully ID:${category}`});
   // res.send(name)
 });
 app.post("/cancelTicket", async (req, res) => {
@@ -271,7 +297,7 @@ app.post("/VerifyTicket", async (req, res) => {
   res.send({ "Ticket Verified": true });
   // res.send(name)
 });
-app.post("/ViewTicket", async (req, res) => {
+app.get("/ViewTicket", async (req, res) => {
   // {
   //     "acc": "0xE75DF387a3F47f1760d0Dd423b27d2eEFD59c6b9",
   //     "id": 2
@@ -280,8 +306,13 @@ app.post("/ViewTicket", async (req, res) => {
 
   let acc = data.acc;
   let id = data.id;
+  try {
   const tx = await contracWithWallet.ViewTicket(acc, id);
   res.send({ "Category Ticket balance": parseInt(tx) });
+    
+  } catch (error) {
+    res.send(error);
+  }
 });
 app.post("/setApprovalForAll", async (req, res) => {
   // {

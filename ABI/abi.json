@@ -132,11 +132,6 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "_eventID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "_category",
 				"type": "uint256"
 			}
@@ -156,12 +151,12 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "acc",
+				"name": "_account",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "id",
+				"name": "_category",
 				"type": "uint256"
 			}
 		],
@@ -192,17 +187,17 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "category",
+				"name": "_category",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "price",
+				"name": "_price",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "totalTickets",
+				"name": "_totalTickets",
 				"type": "uint256"
 			}
 		],
@@ -238,17 +233,17 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "eventID",
+				"name": "_eventID",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "category",
+				"name": "_category",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "quantity",
+				"name": "_quantity",
 				"type": "uint256"
 			}
 		],

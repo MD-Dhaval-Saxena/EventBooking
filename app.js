@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 // const config=require('./Config');
 
->>>>>>> 9f5a5b71f7c705193ca24ba01198af3877fbffb3
 require("dotenv").config()
 const express=require('express');
 const ethers= require('ethers');

@@ -14,6 +14,15 @@ contract EventBooking is ERC1155Holder {
         contract_owner=msg.sender;
     }
 
+    modifier onlyOwner() {
+        _checkOwner();
+        _;
+    }
+
+    function _checkOwner() internal view virtual {
+        require(contract_owner == msg.sender, "Ownable: caller is not the owner");
+    }
+
     uint public eventIdTracker=0;
     uint256 []  CurrEvents ;
     uint256 [] public CountCategories ;
@@ -42,7 +51,7 @@ contract EventBooking is ERC1155Holder {
     mapping(uint256 => mapping(uint256 => TicketCategory))
         public eventTicketCategories;
     mapping(uint256 => uint256)  remainCategory; //Testing
-    mapping(uint256 => bool) public CancelEvent;
+    mapping(uint256 => bool)  CancelEvent;
 
     // userFunds public until testing phase
     mapping(uint256 => mapping(address => uint256)) public userFunds; 
@@ -86,35 +95,42 @@ contract EventBooking is ERC1155Holder {
         CancelEvent[_eventID] = false;
         CurrEvents.push(_eventID);
     }
+    function isEvent(uint _eventID) internal view{
+        Event storage events = eventInfo[_eventID];
+        require(events.Owner != address(0), "Event Not Found,Please Reconfirm");
+    }
+
+    // _category is unique for all events
+    // start with eventId + 00 + Category number example:1001,1002,1003
 
     function add_Ticket_Category(
         uint256 _eventID,
-        uint256 category,
-        uint256 price,
-        uint256 totalTickets
+        uint256 _category,
+        uint256 _price,
+        uint256 _totalTickets
     ) public {
+        TicketCategory storage ticCategory = eventTicketCategories[_eventID][
+            _category
+        ];
+        require(ticCategory.totalTickets <= 0,"Event Category Already Exist!");
         // Silver =1,Gold=2,Diamond=3
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
-
-        // if yOU DON'T WANT THE ORGINIZER TO UPDATE CATEGORY+
-        // require(ticCategory.totalTickets < 1 ,"Event Category Exist");
-        require(events.Owner != address(0), "Event Not Found");
-
+        isEvent(_eventID);
         // condition category tickets can not greater than total tickets
         require(
-            totalTickets <= remainCategory[_eventID],
+            _totalTickets <= remainCategory[_eventID],
             "Not Enough Ticket to add"
         );
 
-        eventInfo[_eventID].ticketCategories.push(category);
-        eventTicketCategories[_eventID][category] = TicketCategory(
-            price,
-            totalTickets,
-            totalTickets
+        eventInfo[_eventID].ticketCategories.push(_category);
+        eventTicketCategories[_eventID][_category] = TicketCategory(
+            _price,
+            _totalTickets,
+            _totalTickets
         );
-        remainCategory[_eventID] -= totalTickets;
-        CountCategories.push(category);
+        remainCategory[_eventID] -= _totalTickets;
+        CountCategories.push(_category);
     }
 
     function bookTicket(
@@ -125,18 +141,18 @@ contract EventBooking is ERC1155Holder {
         Event storage events = eventInfo[_eventID];
         require(block.timestamp >= events.startBooking, "Booking Will Open Soon,Not began yet");
         require(block.timestamp <= events.endBooking, "Sorry! Booking's For this Event ended");
-
-        require(events.Owner != address(0), "Event Not Found,Please Reconfirm");
+        isEvent(_eventID);
+        // require(events.Owner != address(0), "Event Not Found,Please Reconfirm");
         TicketCategory storage ticCategory = eventTicketCategories[_eventID][
             _category
         ];
         require(msg.value > 0, "Funds Not provided");
         require(_quantity > 0, "Quantity Not provided");
+        require(ticCategory.price > 0, "Invalid ticket category ");
         require(
             _quantity <= ticCategory.totalTickets,
             "Quantity is more than available Tickets"
         );
-        require(ticCategory.price > 0, "Invalid ticket category ");
         require(ticCategory.totalTickets > 0, "Tickets Sold Out");
         require(msg.value >= ticCategory.price * _quantity, "Not Enough Funds");
         events.tickets -= _quantity;
@@ -146,49 +162,37 @@ contract EventBooking is ERC1155Holder {
         userFunds[_eventID][msg.sender] += msg.value;
         
     }
+    
+    function ViewTicket(uint256 _category) public view returns (uint256) {
+       return tokenAdd.balanceOf(msg.sender, _category);
+    } 
 
-    function ViewTicket(address acc, uint256 id) public view returns (uint256) {
-        return tokenAdd.balanceOf(acc, id);
-    }
-
-    function VerifyTicket(address acc,uint _eventID, uint256 _category) public returns (bool) {
+    function VerifyTicket(address acc ,uint _eventID, uint256 _category) public returns(bool) {
         // This Method Is Called ON Event venue
-        require(
-            userFunds[_eventID][acc] > 0,
-            "User Don't Have Any Tickets"
-        );
-        Event storage events = eventInfo[_eventID];
-        TicketCategory storage ticCategory = eventTicketCategories[_eventID][
-            _category
-        ];
-        require(ticCategory.price > 0, "Invalid ticket category ");
-        require(events.Owner != address(0), "Event Not Found");
         uint tokenBalance=tokenAdd.balanceOf(acc, _category);
-        uint256 balance=ticCategory.price * _category;
-        // require(balance > userFunds[_eventID][acc],"Not Verified");
-        if(userFunds[_eventID][acc] >= balance && tokenBalance > 0){
-            // Give Entry and Burn Ticket
-            tokenAdd.burn(acc, _category, tokenBalance);
-            return true ;
-        }
-        return false;
+        require(tokenBalance > 0,"No Tickets Found");
+        tokenAdd.burn(acc, _category, tokenBalance);
+        userFunds[_eventID][msg.sender]=0;
+        return true;
     }
 
     function cancelTicket(
-        uint256 eventID,
-        uint256 category,
-        uint256 quantity
+        uint256 _eventID,
+        uint256 _category,
+        uint256 _quantity
     ) public payable {
         // 10% tax on cancelTicket
         // Event storage events = eventInfo[eventID];
-        TicketCategory storage ticCategory = eventTicketCategories[eventID][
-            category
+        TicketCategory storage ticCategory = eventTicketCategories[_eventID][
+            _category
         ];
-        uint256 Amount = ticCategory.price * quantity;
+        uint256 Amount = ticCategory.price * _quantity;
         uint256 Tax = Amount / 10;
         uint256 totalRefund = Amount - Tax;
         payable(msg.sender).transfer(totalRefund);
-        tokenAdd.burn(msg.sender, category, quantity);
+        tokenAdd.burn(msg.sender, _category, _quantity);
+        userFunds[_eventID][msg.sender]-=Amount;
+
     }
 
     function Cancel_event(uint256 _eventID) public {
@@ -196,10 +200,7 @@ contract EventBooking is ERC1155Holder {
         require(events.Owner == msg.sender,"Only Event Organizer");
         CancelEvent[_eventID] = true;
         delete eventInfo[_eventID];
-        // uint balance= tokenAdd.balanceOf(msg.sender, _category);
-        // tokenAdd.burn(msg.sender, _category, balance);
-
-        // delete eventTicketCategories[]
+       
     }
 
     // For Testing
@@ -207,34 +208,37 @@ contract EventBooking is ERC1155Holder {
         payable(msg.sender).transfer(address(this).balance);
     }
 
+
     // Claim Refund and Burned Tickets
     function claimRefund(uint256 _eventID,uint _category) public payable {
+        TicketCategory storage ticCategory = eventTicketCategories[_eventID][
+        _category
+        ];
+        uint tokenBalance=tokenAdd.balanceOf(msg.sender, _category);
         require(CancelEvent[_eventID], "Event is Not cancelled");
-        require(
-            userFunds[_eventID][msg.sender] > 0,
+        require(ticCategory.price > 0, "Invalid ticket category ");
+
+         require(
+            tokenBalance > 0,
             "Your not eligible or already withdrawn funds"
         );
-        uint256 amount = userFunds[_eventID][msg.sender];
-        payable(msg.sender).transfer(amount);
-        delete userFunds[_eventID][msg.sender];
-        uint balance= tokenAdd.balanceOf(msg.sender, _category);
+    
+        uint256 Amount = ticCategory.price * tokenBalance;
+        userFunds[_eventID][msg.sender]-=Amount;
+        payable(msg.sender).transfer(Amount);
         // Claim Refund and Burned Tickets
-        tokenAdd.burn(msg.sender, _category, balance);
+        tokenAdd.burn(msg.sender, _category, tokenBalance);
 
     }
 
-    function PaymentToOWner(uint _eventID) public payable {
+    function PaymentToOWner(uint _eventID) public payable onlyOwner {
         Event storage events = eventInfo[_eventID];
-        require(events.Owner != address(0), "Event Not Found");
+         isEvent(_eventID);
         require(block.timestamp > events.endBooking,"Booking For Event is Still Open");
-        require(contract_owner == msg.sender,"Only Contract Owner");
+        // require(contract_owner == msg.sender,"Only Contract Owner");
         payable(events.Owner).transfer(address(this).balance);
 
     }
-
-    // function ViewEvents() public view returns(uint256[] memory){
-    //     return CurrEvents;
-    // }
 
     function getCat() public view returns(uint[] memory){
         return CountCategories;
