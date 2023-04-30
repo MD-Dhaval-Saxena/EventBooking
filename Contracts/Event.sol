@@ -117,7 +117,7 @@ contract EventBooking is ERC1155Holder {
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
         isEvent(_eventID);
-        // condition category tickets can not greater than total tickets
+        // condition category tickets can't be greater than total tickets
         require(
             _totalTickets <= remainCategory[_eventID],
             "Not Enough Ticket to add"
@@ -142,7 +142,6 @@ contract EventBooking is ERC1155Holder {
         require(block.timestamp >= events.startBooking, "Booking Will Open Soon,Not began yet");
         require(block.timestamp <= events.endBooking, "Sorry! Booking's For this Event ended");
         isEvent(_eventID);
-        // require(events.Owner != address(0), "Event Not Found,Please Reconfirm");
         TicketCategory storage ticCategory = eventTicketCategories[_eventID][
             _category
         ];
@@ -166,7 +165,9 @@ contract EventBooking is ERC1155Holder {
     function ViewTicket(uint256 _category) public view returns (uint256) {
        return tokenAdd.balanceOf(msg.sender, _category);
     } 
+    // function VerifyTicket(uint _eventID, uint256 _category) public returns(bool) {
 
+        // update to msg.sender
     function VerifyTicket(address acc ,uint _eventID, uint256 _category) public returns(bool) {
         // This Method Is Called ON Event venue
         uint tokenBalance=tokenAdd.balanceOf(acc, _category);
@@ -208,7 +209,6 @@ contract EventBooking is ERC1155Holder {
         payable(msg.sender).transfer(address(this).balance);
     }
 
-
     // Claim Refund and Burned Tickets
     function claimRefund(uint256 _eventID,uint _category) public payable {
         TicketCategory storage ticCategory = eventTicketCategories[_eventID][
@@ -228,6 +228,7 @@ contract EventBooking is ERC1155Holder {
         payable(msg.sender).transfer(Amount);
         // Claim Refund and Burned Tickets
         tokenAdd.burn(msg.sender, _category, tokenBalance);
+        
 
     }
 
@@ -242,6 +243,9 @@ contract EventBooking is ERC1155Holder {
 
     function getCat() public view returns(uint[] memory){
         return CountCategories;
+    }
+    function getEvent() public view returns(uint[] memory){
+        return CurrEvents;
     }
     function viewAllEvents() public view returns (Event[] memory) {
         Event[] memory id = new Event[](CurrEvents.length); //2

@@ -10,6 +10,7 @@ const { Schema } = mongoose;
 // uint256 endBooking,
 // uint256 tickets
 
+// Solution - In connection string, change localhost to 127.0.0.1.
 const dataSchema = new Schema({
     eventId: {
         type: String,
@@ -18,9 +19,9 @@ const dataSchema = new Schema({
     
       EventName: String,
       Owner: String,
-      Date: Date,
-      startBooking: Date,
-      endBooking: Date,
+      Date: Number,
+      startBooking: Number,
+      endBooking: Number,
       EventName: String,
       tickets: Number
 });
