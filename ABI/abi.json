@@ -107,11 +107,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "acc",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "_eventID",
 				"type": "uint256"
