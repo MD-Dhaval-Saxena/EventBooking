@@ -165,14 +165,12 @@ contract EventBooking is ERC1155Holder {
     function ViewTicket(uint256 _category) public view returns (uint256) {
        return tokenAdd.balanceOf(msg.sender, _category);
     } 
-    // function VerifyTicket(uint _eventID, uint256 _category) public returns(bool) {
-
-        // update to msg.sender
-    function VerifyTicket(address acc ,uint _eventID, uint256 _category) public returns(bool) {
+    function VerifyTicket(uint _eventID, uint256 _category) public returns(bool) {
+        isEvent(_eventID);
         // This Method Is Called ON Event venue
-        uint tokenBalance=tokenAdd.balanceOf(acc, _category);
+        uint tokenBalance=tokenAdd.balanceOf(msg.sender, _category);
         require(tokenBalance > 0,"No Tickets Found");
-        tokenAdd.burn(acc, _category, tokenBalance);
+        tokenAdd.burn(msg.sender, _category, tokenBalance);
         userFunds[_eventID][msg.sender]=0;
         return true;
     }
