@@ -194,12 +194,11 @@ contract EventBooking is ERC1155Holder {
 
     }
 
-    function Cancel_event(uint256 _eventID) public {
+    function Cancel_event(uint256 _eventID) public payable{
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
         CancelEvent[_eventID] = true;
         delete eventInfo[_eventID];
-       
     }
 
     // For Testing
