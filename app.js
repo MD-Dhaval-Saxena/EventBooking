@@ -19,3 +19,6 @@ app.listen(8000, () => {
   
   console.log(`Serving on http://127.0.0.1:8000`);
 });
+
+// contract_address="0xBce5b03a8663638BB33D536899Df2C5C0778B639"
+// token_contract="0xC6bc3fE68aBFC82bbF0818D6835818696D16c048"

@@ -55,6 +55,7 @@ contract EventBooking is ERC1155Holder {
 
     // userFunds public until testing phase
     mapping(uint256 => mapping(address => uint256)) public userFunds; 
+    mapping(uint256 =>  uint256) public paymentEvent; 
     struct TicketCategory {
         uint256 price;
         uint256 totalTickets;
@@ -159,6 +160,7 @@ contract EventBooking is ERC1155Holder {
         // Mint by user
         tokenAdd.mint(msg.sender, _category, _quantity); //owner mint
         userFunds[_eventID][msg.sender] += msg.value;
+        paymentEvent[_eventID]+=msg.value;
         
     }
     
@@ -194,7 +196,7 @@ contract EventBooking is ERC1155Holder {
 
     }
 
-    function Cancel_event(uint256 _eventID) public payable{
+    function Cancel_event(uint256 _eventID) public {
         Event storage events = eventInfo[_eventID];
         require(events.Owner == msg.sender,"Only Event Organizer");
         CancelEvent[_eventID] = true;
@@ -230,11 +232,13 @@ contract EventBooking is ERC1155Holder {
     }
 
     function PaymentToOWner(uint _eventID) public payable onlyOwner {
+        uint balance=paymentEvent[_eventID];
+        require(balance > 0,"No Funds to Send");
         Event storage events = eventInfo[_eventID];
          isEvent(_eventID);
         require(block.timestamp > events.endBooking,"Booking For Event is Still Open");
         // require(contract_owner == msg.sender,"Only Contract Owner");
-        payable(events.Owner).transfer(address(this).balance);
+        payable(events.Owner).transfer(balance);
 
     }
 
