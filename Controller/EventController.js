@@ -263,9 +263,14 @@ module.exports = {
     let data = req.body;
     let eventId = data.eventId;
     let category = data.category;
-    const tx = await contracWithWallet.VerifyTicket(eventId, category);
+    try {
+      const tx = await contracWithWallet.VerifyTicket(eventId, category);
     console.log("Please Give Apporval Before Calling..");
     res.send({ "Ticket Verified": true });
+    } catch (error) {
+      res.send(error.error.error.body)
+    }
+    
   },
   cancelTicket: async (req, res) => {
     //   // {
@@ -284,8 +289,11 @@ module.exports = {
         category,
         _quantity
       );
-    } catch (error) {}
     res.send({ "Ticket Cancelled Succufully": true });
+
+    } catch (error) {
+      res.send(error);
+    }
 
     // console.log(req.body);
     // res.send(name)
@@ -313,9 +321,15 @@ module.exports = {
 
     let eventId = data.eventId;
     let _category = data._category;
+    try {
     const tx = await contracWithWallet.claimRefund(eventId, _category);
-    console.log(req.body);
     res.send({ "Claimed Refund Succufully": true });
+      
+    } catch (error) {
+      // res.send(error)
+      res.send(error.error.error.body)
+    }
+    console.log(req.body);
   },
   PaymentToOWner: async (req, res) => {
     //   // {
